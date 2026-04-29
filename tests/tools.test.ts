@@ -26,6 +26,19 @@ describe('buildToolDefinitions', () => {
     expect(tools[0].description).toContain('https://www.iletimerkezi.com/en/docs/api/get-balance')
   })
 
+  it('strips Markdown formatting from descriptions', () => {
+    const manifest = makeManifest()
+    manifest.endpoints[0].summary.en =
+      'The `send-sms` endpoint delivers messages. Use [`get-report`](./get-report.md) to track them. Treated as an **order**.'
+    const tools = buildToolDefinitions(manifest)
+    expect(tools[0].description).not.toContain('`')
+    expect(tools[0].description).not.toContain('**')
+    expect(tools[0].description).not.toContain('](')
+    expect(tools[0].description).toContain('send-sms endpoint')
+    expect(tools[0].description).toContain('get-report')
+    expect(tools[0].description).toContain('order')
+  })
+
   it('skips endpoints without mcp_tool', () => {
     const manifest = makeManifest()
     delete manifest.endpoints[0].mcp_tool

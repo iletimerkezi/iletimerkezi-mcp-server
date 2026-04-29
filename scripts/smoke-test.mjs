@@ -1,10 +1,13 @@
 #!/usr/bin/env node
+import { mkdtempSync, rmSync } from 'node:fs'
+import { tmpdir } from 'node:os'
 import { spawn } from 'node:child_process'
-import { resolve, dirname } from 'node:path'
+import { resolve, dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const ENTRY = resolve(ROOT, 'dist/index.js')
+const CACHE_DIR = mkdtempSync(join(tmpdir(), 'imcp-smoke-'))
 
 function send(child, message) {
   child.stdin.write(JSON.stringify(message) + '\n')
@@ -18,6 +21,7 @@ async function main() {
       ILETIMERKEZI_API_KEY: process.env.ILETIMERKEZI_API_KEY || 'smoke',
       ILETIMERKEZI_API_HASH: process.env.ILETIMERKEZI_API_HASH || 'smoke',
       ILETIMERKEZI_MANIFEST_URL: 'http://127.0.0.1:9/never-resolves',
+      ILETIMERKEZI_MCP_CACHE_DIR: CACHE_DIR,
     },
     stdio: ['pipe', 'pipe', 'inherit'],
   })
@@ -52,6 +56,11 @@ async function main() {
   await new Promise((r) => setTimeout(r, 500))
 
   child.kill()
+  try {
+    rmSync(CACHE_DIR, { recursive: true, force: true })
+  } catch {
+    // best-effort cleanup
+  }
 
   const initResp = responses.find((r) => r.id === 1)
   const toolsResp = responses.find((r) => r.id === 2)

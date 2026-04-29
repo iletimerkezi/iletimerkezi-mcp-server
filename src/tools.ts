@@ -22,9 +22,18 @@ export function buildToolDefinitions(manifest: ApiManifest): McpToolDefinition[]
 function buildDescription(ep: ManifestEndpoint): string {
   const summary = ep.summary?.en || ep.summary?.tr || ep.notes || ''
   const docUrl = ep.doc_url?.en || ep.doc_url?.tr
-  const trimmed = summary.replace(/\s+/g, ' ').trim().slice(0, 600)
+  const plain = stripMarkdown(summary).replace(/\s+/g, ' ').trim().slice(0, 600)
   const tail = docUrl ? `\n\nReference: ${docUrl}` : ''
-  return `${trimmed}${tail}`.trim()
+  return `${plain}${tail}`.trim()
+}
+
+function stripMarkdown(text: string): string {
+  return text
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/\*\*([^*]+)\*\*/g, '$1')
+    .replace(/\*([^*]+)\*/g, '$1')
+    .replace(/_([^_]+)_/g, '$1')
 }
 
 export interface ToolCallContext {
