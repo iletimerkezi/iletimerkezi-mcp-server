@@ -1,5 +1,9 @@
 # iletiMerkezi MCP Server
 
+[![npm version](https://img.shields.io/npm/v/@iletimerkezi/mcp-server.svg)](https://www.npmjs.com/package/@iletimerkezi/mcp-server)
+[![License](https://img.shields.io/npm/l/@iletimerkezi/mcp-server.svg)](LICENSE)
+[![Node](https://img.shields.io/node/v/@iletimerkezi/mcp-server.svg)](package.json)
+
 Model Context Protocol server for the [iletiMerkezi](https://www.iletimerkezi.com) SMS API. Lets MCP-aware LLM clients (Claude Desktop, Cursor, Cline, …) send SMS, query delivery reports, and manage senders / blacklists through tool calls.
 
 iletiMerkezi is a Turkish, BTK-licensed bulk SMS / OTP / A2P platform. Tool shapes (input schemas, descriptions, doc links) are derived from a canonical [API manifest](https://www.iletimerkezi.com/api/manifest.json) that is built from the official endpoint documentation, so this server stays in lock-step with the live API by design.

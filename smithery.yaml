@@ -1,0 +1,26 @@
+startCommand:
+  type: stdio
+  configSchema:
+    type: object
+    required:
+      - ILETIMERKEZI_API_KEY
+      - ILETIMERKEZI_API_HASH
+    properties:
+      ILETIMERKEZI_API_KEY:
+        type: string
+        title: iletiMerkezi API Key
+        description: API key issued from panel.iletimerkezi.com → Settings → Security → API Access. Also enable "Allow API access" under Access Permissions.
+      ILETIMERKEZI_API_HASH:
+        type: string
+        title: iletiMerkezi API Hash
+        description: API hash issued from the same panel page. Do not compute it yourself — the panel provides a precomputed value.
+        format: password
+  commandFunction: |-
+    (config) => ({
+      command: 'npx',
+      args: ['-y', '@iletimerkezi/mcp-server'],
+      env: {
+        ILETIMERKEZI_API_KEY: config.ILETIMERKEZI_API_KEY,
+        ILETIMERKEZI_API_HASH: config.ILETIMERKEZI_API_HASH
+      }
+    })
