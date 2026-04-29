@@ -93,7 +93,25 @@ describe('loadManifest', () => {
         fetchImpl: makeFetch(async () => {
           throw new Error('network down')
         }),
+        fallbackPaths: [],
       }),
     ).rejects.toThrow(/manifest is unavailable/)
+  })
+
+  it('uses fallback when fetch fails and a fallback path is provided', async () => {
+    const dir = await makeTmpDir()
+    const file = path.join(dir, 'manifest.json')
+    const fallbackFile = path.join(dir, 'manifest.fallback.json')
+    await fs.writeFile(fallbackFile, JSON.stringify(makeManifest()), 'utf8')
+    const result = await loadManifest({
+      cacheDir: dir,
+      cacheFile: file,
+      fetchImpl: makeFetch(async () => {
+        throw new Error('network down')
+      }),
+      fallbackPaths: [fallbackFile],
+    })
+    expect(result.source).toBe('fallback')
+    expect(result.manifest.endpoints[0].mcp_tool).toBe('get_balance')
   })
 })

@@ -13,6 +13,12 @@ export interface LoadOptions {
   cacheFile?: string
   fetchImpl?: typeof fetch
   now?: () => number
+  /**
+   * Override the fallback search path list. Pass `[]` to disable the fallback
+   * lookup entirely (useful in tests). When omitted, the production candidate
+   * list is used.
+   */
+  fallbackPaths?: string[]
 }
 
 export function getManifestUrl(env: NodeJS.ProcessEnv = process.env): string {
@@ -67,14 +73,18 @@ async function fetchLive(url: string, fetchImpl: typeof fetch): Promise<ApiManif
   }
 }
 
-function loadFallback(): ApiManifest {
+function defaultFallbackPaths(): string[] {
   const scriptDir = process.argv[1] ? path.dirname(process.argv[1]) : process.cwd()
-  const candidates = [
+  return [
     process.env.ILETIMERKEZI_FALLBACK_MANIFEST,
     path.resolve(scriptDir, 'manifest.fallback.json'),
     path.resolve(scriptDir, '../manifest.fallback.json'),
     path.resolve(process.cwd(), 'dist/manifest.fallback.json'),
   ].filter((p): p is string => typeof p === 'string' && p.length > 0)
+}
+
+function loadFallback(overridePaths?: string[]): ApiManifest {
+  const candidates = overridePaths !== undefined ? overridePaths : defaultFallbackPaths()
   for (const candidate of candidates) {
     try {
       return JSON.parse(readFileSync(candidate, 'utf8')) as ApiManifest
@@ -106,7 +116,7 @@ export async function loadManifest(options: LoadOptions = {}): Promise<ManifestL
     void writeCache(cache.dir, cache.file, { fetched_at, manifest: live }).catch(() => {})
     return { manifest: live, source: 'live', fetched_at }
   } catch {
-    const fallback = loadFallback()
+    const fallback = loadFallback(options.fallbackPaths)
     return {
       manifest: fallback,
       source: 'fallback' as ManifestSource,
