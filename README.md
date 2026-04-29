@@ -3,6 +3,7 @@
 [![npm version](https://img.shields.io/npm/v/@iletimerkezi/mcp-server.svg)](https://www.npmjs.com/package/@iletimerkezi/mcp-server)
 [![License](https://img.shields.io/npm/l/@iletimerkezi/mcp-server.svg)](LICENSE)
 [![Node](https://img.shields.io/node/v/@iletimerkezi/mcp-server.svg)](package.json)
+[![Glama score](https://glama.ai/mcp/servers/iletimerkezi/iletimerkezi-mcp-server/badges/score.svg)](https://glama.ai/mcp/servers/iletimerkezi/iletimerkezi-mcp-server)
 
 Model Context Protocol server for the [iletiMerkezi](https://www.iletimerkezi.com) SMS API. Lets MCP-aware LLM clients (Claude Desktop, Cursor, Cline, …) send SMS, query delivery reports, and manage senders / blacklists through tool calls.
 
@@ -79,10 +80,12 @@ This speaks MCP over stdio. Use an MCP client to interact, or pipe a JSON-RPC ha
 
 ## Reference
 
+- MCP setup guide: [https://www.iletimerkezi.com/docs/mcp](https://www.iletimerkezi.com/docs/mcp) (TR) · [/en/docs/mcp](https://www.iletimerkezi.com/en/docs/mcp) (EN)
 - Overview: [https://www.iletimerkezi.com/docs/api/overview](https://www.iletimerkezi.com/docs/api/overview)
 - Authentication: [https://www.iletimerkezi.com/docs/api/authentication](https://www.iletimerkezi.com/docs/api/authentication)
 - Error codes: [https://www.iletimerkezi.com/docs/api/error-codes](https://www.iletimerkezi.com/docs/api/error-codes)
 - Manifest (machine-readable): [https://www.iletimerkezi.com/api/manifest.json](https://www.iletimerkezi.com/api/manifest.json)
+- Release notes: [CHANGELOG.md](CHANGELOG.md)
 
 ## License
 
