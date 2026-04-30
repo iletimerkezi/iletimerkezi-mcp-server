@@ -9,17 +9,21 @@ Model Context Protocol server for the [iletiMerkezi](https://www.iletimerkezi.co
 
 iletiMerkezi is a Turkish, BTK-licensed bulk SMS / OTP / A2P platform. Tool shapes (input schemas, descriptions, doc links) are derived from a canonical [API manifest](https://www.iletimerkezi.com/api/manifest.json) that is built from the official endpoint documentation, so this server stays in lock-step with the live API by design.
 
-## Tools (MVP)
+## Tools
 
 | Tool | API endpoint | Notes |
 |---|---|---|
 | `send_sms` | `POST /v1/send-sms/json` | Send SMS to one or many numbers |
-| `get_report` | `POST /v1/get-report/json` | Order delivery report (summary + per-recipient) |
+| `cancel_order` | `POST /v1/cancel-order/json` | Cancel a future-scheduled order before dispatch |
+| `get_report` | `POST /v1/get-report/json` | Single-order delivery report (summary + per-recipient) |
+| `get_reports` | `POST /v1/get-reports/json` | Order summary list within a date range (max 10 days) |
 | `get_balance` | `POST /v1/get-balance/json` | Account balance (TL + SMS credits) |
 | `get_sender` | `POST /v1/get-sender/json` | Approved sender (header) list |
 | `get_blacklist` | `POST /v1/get-blacklist/json` | Blocked numbers (paginated) |
 | `add_blacklist` | `POST /v1/add-blacklist/json` | Block a number (idempotent) |
 | `delete_blacklist` | `POST /v1/delete-blacklist/json` | Unblock a number |
+| `iys_register` | `POST /v1/consent/create/json` | Register İYS consent records (batch, max 5000) |
+| `iys_check` | `POST /v1/consent/show/json` | Look up İYS consent status for a recipient |
 
 ## Installation
 

@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- 4 new tools auto-discovered from the manifest:
+  - `cancel_order` — cancel a future-scheduled `send-sms` order before dispatch (`POST /v1/cancel-order/json`).
+  - `get_reports` — list order summaries within a date range, max 10 days per call (`POST /v1/get-reports/json`).
+  - `iys_register` — register İYS (Turkish messaging consent registry) records, batch up to 5000 per call (`POST /v1/consent/create/json`).
+  - `iys_check` — look up the current İYS consent status for a single recipient (`POST /v1/consent/show/json`).
+
+No source-code changes are required — the server's tool list is generated from `https://www.iletimerkezi.com/api/manifest.json` at boot. Existing installations pick up the new tools after the 24h cache expires; refresh by deleting `~/.cache/iletimerkezi-mcp/manifest.json` or republishing the npm package (the `prepublishOnly` hook ships a fresh manifest snapshot in `dist/manifest.fallback.json`).
+
 ## [0.1.0] — 2026-04-29
 
 ### Added
