@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `get_inbox` exposed via manifest auto-discovery (was doc-only since v0.1.0). Live behavior verified on 2026-04-29; the `apidocs-website#4` drift issue (endpoint not in upstream Docusaurus spec) remains open and is documented in the endpoint MD. The tool is read-only, takes no input parameters, and consumes no credits. Pagination is still upstream-undocumented; very large inboxes may not surface in a single call.
+
 ## [0.2.0] — 2026-04-30
 
 ### Added
