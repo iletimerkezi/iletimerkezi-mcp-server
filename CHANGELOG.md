@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] — 2026-04-30
+
 ### Added
 
 - 4 new tools auto-discovered from the manifest:
@@ -15,7 +17,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `iys_register` — register İYS (Turkish messaging consent registry) records, batch up to 5000 per call (`POST /v1/consent/create/json`).
   - `iys_check` — look up the current İYS consent status for a single recipient (`POST /v1/consent/show/json`).
 
-No source-code changes are required — the server's tool list is generated from `https://www.iletimerkezi.com/api/manifest.json` at boot. Existing installations pick up the new tools after the 24h cache expires; refresh by deleting `~/.cache/iletimerkezi-mcp/manifest.json` or republishing the npm package (the `prepublishOnly` hook ships a fresh manifest snapshot in `dist/manifest.fallback.json`).
+### Changed
+
+- `send-sms` `iys` field description sharpened with concrete decision examples (KVKK 6563 §1 transactional exemption, APITEST sender → `iys` must be `"0"`); behavior unchanged.
+- `send-sms` `request_shape` aligns `iysList` as conditional (closes the drift Copilot flagged on iletimerkezi-website PR #100).
+- `iys-register` `brandCode` schema retained as `string|integer` after live verification on 2026-04-30 confirmed both types are accepted by `/v1/consent/create/json` and `/v1/consent/show/json`.
+
+### Notes
+
+No source-code changes were required — the server's tool list is generated from `https://www.iletimerkezi.com/api/manifest.json` at boot. Existing installations pick up the new tools after the 24h cache expires; refresh by deleting `~/.cache/iletimerkezi-mcp/manifest.json` or republishing the npm package (the `prepublishOnly` hook ships a fresh manifest snapshot in `dist/manifest.fallback.json`).
 
 ## [0.1.0] — 2026-04-29
 
@@ -29,5 +39,6 @@ No source-code changes are required — the server's tool list is generated from
 - `prepublishOnly` hook fetches the live manifest and writes it to `dist/manifest.fallback.json` so every published version ships with a current snapshot.
 - 15 unit tests (auth, manifest cache/fallback, tool dispatch, 401 guidance, Markdown stripping) and an offline `tools/list` smoke script.
 
-[Unreleased]: https://github.com/iletimerkezi/iletimerkezi-mcp-server/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/iletimerkezi/iletimerkezi-mcp-server/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/iletimerkezi/iletimerkezi-mcp-server/releases/tag/v0.2.0
 [0.1.0]: https://github.com/iletimerkezi/iletimerkezi-mcp-server/releases/tag/v0.1.0
