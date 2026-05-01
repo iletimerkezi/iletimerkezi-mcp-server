@@ -11,10 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- 3 new tools auto-discovered from the manifest, taking the published tool count from 7 to 10:
+- 4 new tools auto-discovered from the manifest, taking the published tool count from 7 to 11:
   - `cancel_order` — cancel a future-scheduled `send-sms` order before dispatch (`POST /v1/cancel-order/json`). `sendDateTime` must be `dd/MM/yyyy HH:mm` (no seconds — providing seconds causes the backend to ignore the schedule and dispatch immediately).
   - `get_reports` — list order summaries within a date range, max 10 days per call (`POST /v1/get-reports/json`). Request body uses `request.filter.{start, end, page?}`.
   - `iys_register` — register İYS (Turkish messaging consent registry) records, batch up to 5000 per call (`POST /v1/consent/create/json`). Live verified on 2026-05-01 with brand 696422.
+  - `iys_check` — look up the current İYS consent status for a single recipient (`POST /v1/consent/show/json`). Returns the consent object (status, source, consentDate) when a record exists; returns 422 when the recipient has no İYS record at all. Two minor edge-case drifts remain at the upstream (`200 + consent: []` for TACIR/MESAJ when no record exists for that recipientType under the same brand, and for invalid brandCodes); these do not affect the main lookup use case and are tracked separately.
 
 ### Changed
 
@@ -29,7 +30,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed (pre-release)
 
 - `get_inbox` — the upstream endpoint (`POST /v1/get-inbox/json`) is outside official support and was withdrawn from the public surface before this release shipped. It had been auto-discovered from the manifest in pre-release builds; the page is archived in the website repo at `docs/archive/api-inbox-{tr,en}-2026-05-01.md`.
-- `iys_check` — the `consent/show` endpoint returns `consent: []` for verified İYS records (and even for invalid `brandCode` values), so it is not safe to expose as an MCP tool. The page is archived at `docs/archive/api-iys-check-{tr,en}-2026-05-01.md`. İYS consent enforcement is fully covered by `send-sms iys=1`, which performs a real-time İYS lookup before dispatch and drops non-consented recipients.
 
 ### Notes
 

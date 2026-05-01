@@ -23,6 +23,7 @@ iletiMerkezi is a Turkish, BTK-licensed bulk SMS / OTP / A2P platform. Tool shap
 | `add_blacklist` | `POST /v1/add-blacklist/json` | Block a number (idempotent) |
 | `delete_blacklist` | `POST /v1/delete-blacklist/json` | Unblock a number |
 | `iys_register` | `POST /v1/consent/create/json` | Register İYS consent records (batch, max 5000) |
+| `iys_check` | `POST /v1/consent/show/json` | Look up İYS consent status for a recipient |
 
 ## Installation
 

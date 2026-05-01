@@ -75,8 +75,8 @@ async function main() {
     const props = Object.keys(t.inputSchema?.properties || {}).length
     console.log(`  - ${t.name} (input properties: ${props})`)
   }
-  if (tools.length !== 10) {
-    console.error(`EXPECTED 10 tools, got ${tools.length}`)
+  if (tools.length !== 11) {
+    console.error(`EXPECTED 11 tools, got ${tools.length}`)
     process.exit(1)
   }
   const expected = [
@@ -90,6 +90,7 @@ async function main() {
     'add_blacklist',
     'delete_blacklist',
     'iys_register',
+    'iys_check',
   ]
   const got = tools.map((t) => t.name).sort()
   if (JSON.stringify(got) !== JSON.stringify([...expected].sort())) {

@@ -1,14 +1,15 @@
-# v0.2.0 — 3 new tools, refined İYS / scheduling / blacklist contracts
+# v0.2.0 — 4 new tools, refined İYS / scheduling / blacklist contracts
 
-This release expands `@iletimerkezi/mcp-server` from 7 tools to **10**, adds a real-time İYS check on every commercial `send_sms` dispatch, and ships sharper input schemas based on live-API verification.
+This release expands `@iletimerkezi/mcp-server` from 7 tools to **11**, adds a real-time İYS check on every commercial `send_sms` dispatch, and ships sharper input schemas based on live-API verification.
 
 ## What's new in 0.2.0
 
-### 3 new tools (auto-discovered from the manifest)
+### 4 new tools (auto-discovered from the manifest)
 
 - **`cancel_order`** — cancel a future-scheduled `send-sms` order before dispatch (`POST /v1/cancel-order/json`). `sendDateTime` must be `dd/MM/yyyy HH:mm` (no seconds — providing seconds causes the backend to ignore the schedule and dispatch immediately). On cancel, the order moves to status `115`.
 - **`get_reports`** — list order summaries within a date range, max 10 days per call (`POST /v1/get-reports/json`). Request body uses `request.filter.{start, end, page?}`.
 - **`iys_register`** — register İYS (Turkish messaging consent registry) records, batch up to 5000 per call (`POST /v1/consent/create/json`). Live verified on 2026-05-01 with brand 696422.
+- **`iys_check`** — look up the current İYS consent status for a single recipient (`POST /v1/consent/show/json`). Returns the consent object (status, source, consentDate) when a record exists; returns 422 when the recipient has no İYS record at all.
 
 ### Sharper schemas and notes
 
@@ -18,12 +19,9 @@ This release expands `@iletimerkezi/mcp-server` from 7 tools to **10**, adds a r
 
 ### Removed before release
 
-Two pre-release tools were withdrawn after live testing on 2026-05-01:
-
 - **`get_inbox`** — the upstream endpoint is outside official support. Withdrawn from the public surface; archived in the website repo.
-- **`iys_check`** — `consent/show` returns `consent: []` for verified İYS records (and even for invalid `brandCode` values). Not safe to expose. Archived. **İYS consent enforcement is fully covered by `send_sms iys=1`**, which performs a real-time İYS lookup before dispatch and drops non-consented recipients.
 
-## Tool list (10)
+## Tool list (11)
 
 | Tool | Endpoint |
 |---|---|
@@ -37,6 +35,7 @@ Two pre-release tools were withdrawn after live testing on 2026-05-01:
 | `add_blacklist` | `POST /v1/add-blacklist/json` |
 | `delete_blacklist` | `POST /v1/delete-blacklist/json` |
 | `iys_register` | `POST /v1/consent/create/json` |
+| `iys_check` | `POST /v1/consent/show/json` |
 
 ## Upgrade
 
