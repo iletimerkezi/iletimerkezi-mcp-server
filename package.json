@@ -1,6 +1,6 @@
 {
   "name": "@iletimerkezi/mcp-server",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "Model Context Protocol server for the iletiMerkezi SMS API. Lets LLMs send SMS, query delivery reports, manage senders and blacklists through tool calls.",
   "license": "MIT",
   "author": "eMarka İletişim ve Bilgi Teknolojileri A.Ş.",
