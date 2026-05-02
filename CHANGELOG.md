@@ -7,16 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.0.0] — 2026-05-02
-
-### Changed
-
-- **First stable release.** No code changes from `0.2.0`; `version` bump only. Published alongside the public MCP launch announcement on iletimerkezi.com.
-
-### Versioning policy
-
-Tool schemas are fetched at runtime from `iletimerkezi.com/api/manifest.json`, so adding a new endpoint upstream does not require an `npm update` on the client side. Package version reflects only changes to client behavior, transport, or installation contract — not the catalog of tools exposed. Minor bumps stay small; major bumps are rare.
-
 ## [0.2.0] — 2026-05-01
 
 ### Added
