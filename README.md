@@ -5,7 +5,7 @@
 [![Node](https://img.shields.io/node/v/@iletimerkezi/mcp-server.svg)](package.json)
 [![Glama score](https://glama.ai/mcp/servers/iletimerkezi/iletimerkezi-mcp-server/badges/score.svg)](https://glama.ai/mcp/servers/iletimerkezi/iletimerkezi-mcp-server)
 
-Model Context Protocol server for the [iletiMerkezi](https://www.iletimerkezi.com) SMS API. Lets MCP-aware LLM clients (Claude Desktop, Cursor, Cline, …) send SMS, query delivery reports, and manage senders / blacklists through tool calls.
+Model Context Protocol server for the [iletiMerkezi](https://www.iletimerkezi.com) SMS API. Lets MCP-aware LLM clients (Claude Code, Cursor, Codex CLI, Gemini CLI, VS Code+Cline, Claude Desktop, …) send SMS, query delivery reports, and manage senders / blacklists through tool calls.
 
 iletiMerkezi is a Turkish, BTK-licensed bulk SMS / OTP / A2P platform. Tool shapes (input schemas, descriptions, doc links) are derived from a canonical [API manifest](https://www.iletimerkezi.com/api/manifest.json) that is built from the official endpoint documentation, so this server stays in lock-step with the live API by design.
 
@@ -27,7 +27,22 @@ iletiMerkezi is a Turkish, BTK-licensed bulk SMS / OTP / A2P platform. Tool shap
 
 ## Installation
 
-Add the server to your MCP client config. Example for Claude Desktop (`~/Library/Application Support/Claude/claude_desktop_config.json` on macOS):
+Five clients share the same JSON `mcpServers` schema; Claude Code and Codex CLI also expose a one-line CLI command. Pick your client below.
+
+### Client → config file
+
+| Client | Config file | Format |
+|---|---|---|
+| **Claude Code** | `claude mcp add ...` (CLI) · `.mcp.json` (project) · `~/.claude.json` (user) | JSON `mcpServers` |
+| **Cursor** | `~/.cursor/mcp.json` (global) · `.cursor/mcp.json` (project) | JSON `mcpServers` |
+| **Gemini CLI** | `~/.gemini/settings.json` (global) · `.gemini/settings.json` (project) | JSON `mcpServers` |
+| **VS Code + Cline** | `cline_mcp_settings.json` (Cline → MCP Servers → Configure) | JSON `mcpServers` |
+| **Claude Desktop** | `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) | JSON `mcpServers` |
+| **Codex CLI** | `codex mcp add ...` (CLI) · `~/.codex/config.toml` | TOML `[mcp_servers.X]` |
+
+### Shared JSON config (Claude Code, Cursor, Gemini CLI, VS Code+Cline, Claude Desktop)
+
+Add this block to the relevant config file:
 
 ```json
 {
@@ -44,7 +59,51 @@ Add the server to your MCP client config. Example for Claude Desktop (`~/Library
 }
 ```
 
-Restart your MCP client. Tools will appear under the `iletimerkezi` server.
+Fully quit and relaunch the client. The 11 tools appear under the `iletimerkezi` server.
+
+### Claude Code — single command
+
+User-scope (available across all projects):
+
+```bash
+claude mcp add iletimerkezi -s user \
+  -e ILETIMERKEZI_API_KEY=your-api-key \
+  -e ILETIMERKEZI_API_HASH=your-api-hash \
+  -- npx -y @iletimerkezi/mcp-server
+```
+
+Close the current Claude Code session and start a new one. Tools appear as `mcp__iletimerkezi__*`. Remove with `claude mcp remove iletimerkezi -s user`.
+
+### Codex CLI — TOML format
+
+Via the CLI:
+
+```bash
+codex mcp add iletimerkezi \
+  --env ILETIMERKEZI_API_KEY=your-api-key \
+  --env ILETIMERKEZI_API_HASH=your-api-hash \
+  -- npx -y @iletimerkezi/mcp-server
+```
+
+Or edit `~/.codex/config.toml` directly:
+
+```toml
+[mcp_servers.iletimerkezi]
+command = "npx"
+args = ["-y", "@iletimerkezi/mcp-server"]
+
+[mcp_servers.iletimerkezi.env]
+ILETIMERKEZI_API_KEY = "your-api-key"
+ILETIMERKEZI_API_HASH = "your-api-hash"
+```
+
+### Verifying
+
+On first use, try `get_balance` and `get_sender` — both are read-only, neither burns credits.
+
+### Hosted clients (ChatGPT Apps, Gemini App, Claude Web Connectors)
+
+These clients require **remote MCP** (HTTPS endpoints) and don't spawn local `npx` commands. This server ships in stdio (local) mode only today. Hosted support is on the roadmap.
 
 ## Credentials
 

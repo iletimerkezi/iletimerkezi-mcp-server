@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] — 2026-05-02
+
+First stable release. The public surface — tool inventory, request/response shapes, configuration env vars (`ILETIMERKEZI_API_KEY`, `ILETIMERKEZI_API_HASH`, `ILETIMERKEZI_MANIFEST_URL`, `ILETIMERKEZI_MCP_CACHE_DIR`), and the manifest-driven auto-discovery contract — is now stable. From here on, breaking changes follow semver and bump the major version.
+
+### Release notes
+
+- 11 tools live and verified across two prior pre-1.0 releases (0.1.0 → 0.2.0).
+- Manifest-driven tool generation: zero hard-coded schemas; new endpoints in [`/api/manifest.json`](https://www.iletimerkezi.com/api/manifest.json) appear as tools within the 24h cache TTL.
+- Three-tier resolution (live fetch → 24h on-disk cache → build-time fallback) keeps clients running even when `iletimerkezi.com` is unreachable.
+- İYS as a first-class surface (`iys_register`, `iys_check`, `send_sms iys=1` real-time check) — among the first MCP servers to expose Turkey's consent registry natively.
+- No breaking changes from 0.2.0; the version bump signals stability, not API churn.
+
+### Documentation
+
+- Installation section in `README.md` rewritten for six MCP clients: Claude Code (with `claude mcp add` one-liner), Cursor, Codex CLI (TOML format), Gemini CLI, VS Code+Cline, and Claude Desktop. Previous version only documented Claude Desktop. The shared JSON `mcpServers` schema is highlighted once for the five JSON-based clients; Codex CLI's TOML alternative is shown alongside its CLI helper. Hosted-client gap (ChatGPT Apps / Gemini App / Claude Web Connectors) called out explicitly with a "stdio-only today, hosted on roadmap" note.
+
 ## [0.2.0] — 2026-05-01
 
 ### Added
@@ -47,6 +63,7 @@ No source-code changes were required — the server's tool list is generated fro
 - `prepublishOnly` hook fetches the live manifest and writes it to `dist/manifest.fallback.json` so every published version ships with a current snapshot.
 - 15 unit tests (auth, manifest cache/fallback, tool dispatch, 401 guidance, Markdown stripping) and an offline `tools/list` smoke script.
 
-[Unreleased]: https://github.com/iletimerkezi/iletimerkezi-mcp-server/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/iletimerkezi/iletimerkezi-mcp-server/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/iletimerkezi/iletimerkezi-mcp-server/compare/v0.2.0...v1.0.0
 [0.2.0]: https://github.com/iletimerkezi/iletimerkezi-mcp-server/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/iletimerkezi/iletimerkezi-mcp-server/releases/tag/v0.1.0
