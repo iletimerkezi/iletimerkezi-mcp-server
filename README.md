@@ -13,7 +13,7 @@ iletiMerkezi is a Turkish, BTK-licensed bulk SMS / OTP / A2P platform. Tool shap
 
 | Tool | API endpoint | Notes |
 |---|---|---|
-| `send_sms` | `POST /v1/send-sms/json` | Send SMS to one or many numbers |
+| `send_sms` | `POST /v1/send-sms/json` | Send SMS to one or many numbers (transactional 100/sec, bulk 50,000/request) |
 | `cancel_order` | `POST /v1/cancel-order/json` | Cancel a future-scheduled order before dispatch |
 | `get_report` | `POST /v1/get-report/json` | Single-order delivery report (summary + per-recipient) |
 | `get_reports` | `POST /v1/get-reports/json` | Order summary list within a date range (max 10 days) |
