@@ -44,6 +44,25 @@ describe('buildToolDefinitions', () => {
     delete manifest.endpoints[0].mcp_tool
     expect(buildToolDefinitions(manifest)).toHaveLength(0)
   })
+
+  it('prefers mcp_description over summary and preserves long content + paragraph breaks', () => {
+    const manifest = makeManifest()
+    const longText =
+      'Send an SMS in a single request. Returns an orderId.\n\nDestructive and irreversible: real SMS is dispatched, paid credit is deducted, cannot be recalled once carrier-queued.\n\nAuth: API key + hash; the "Allow API access" panel toggle must be ON.'
+    manifest.endpoints[0].mcp_description = { en: longText }
+    manifest.endpoints[0].summary.en = 'Short summary that should be ignored.'
+    const tools = buildToolDefinitions(manifest)
+    expect(tools[0].description).toContain('Destructive and irreversible')
+    expect(tools[0].description).toContain('Allow API access')
+    expect(tools[0].description).not.toContain('Short summary')
+    expect(tools[0].description).toContain('\n\n')
+    expect(tools[0].description.length).toBeGreaterThan(200)
+  })
+
+  it('falls back to summary when mcp_description is absent', () => {
+    const tools = buildToolDefinitions(makeManifest())
+    expect(tools[0].description).toContain('Returns the account balance')
+  })
 })
 
 describe('executeTool — get_balance', () => {

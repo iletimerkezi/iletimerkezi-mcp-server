@@ -20,10 +20,14 @@ export function buildToolDefinitions(manifest: ApiManifest): McpToolDefinition[]
 }
 
 function buildDescription(ep: ManifestEndpoint): string {
-  const summary = ep.summary?.en || ep.summary?.tr || ep.notes || ''
+  const rich = ep.mcp_description?.en || ep.mcp_description?.tr
   const docUrl = ep.doc_url?.en || ep.doc_url?.tr
-  const plain = stripMarkdown(summary).replace(/\s+/g, ' ').trim().slice(0, 600)
   const tail = docUrl ? `\n\nReference: ${docUrl}` : ''
+  if (rich) {
+    return `${rich.trim()}${tail}`.trim()
+  }
+  const summary = ep.summary?.en || ep.summary?.tr || ep.notes || ''
+  const plain = stripMarkdown(summary).replace(/\s+/g, ' ').trim()
   return `${plain}${tail}`.trim()
 }
 
