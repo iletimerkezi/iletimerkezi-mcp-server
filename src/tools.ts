@@ -27,7 +27,7 @@ function buildDescription(ep: ManifestEndpoint): string {
     return `${rich.trim()}${tail}`.trim()
   }
   const summary = ep.summary?.en || ep.summary?.tr || ep.notes || ''
-  const plain = stripMarkdown(summary).replace(/\s+/g, ' ').trim()
+  const plain = stripMarkdown(summary).replace(/\s+/g, ' ').trim().slice(0, 600)
   return `${plain}${tail}`.trim()
 }
 
