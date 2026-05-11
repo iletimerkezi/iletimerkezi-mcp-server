@@ -15,6 +15,7 @@ export interface ManifestEndpoint {
   error_codes: number[]
   notes: string
   mcp_tool?: string
+  mcp_description?: { tr?: string; en?: string }
   input_schema?: Record<string, unknown>
   summary: { tr: string; en: string }
   title: { tr: string; en: string }

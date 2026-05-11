@@ -44,6 +44,44 @@ describe('buildToolDefinitions', () => {
     delete manifest.endpoints[0].mcp_tool
     expect(buildToolDefinitions(manifest)).toHaveLength(0)
   })
+
+  it('prefers mcp_description.en over summary and preserves internal paragraph breaks', () => {
+    const manifest = makeManifest()
+    const longText =
+      'Send an SMS in a single request. Returns an orderId.\n\nDestructive and irreversible: real SMS is dispatched, paid credit is deducted, cannot be recalled once carrier-queued.\n\nAuth: API key + hash; the "Allow API access" panel toggle must be ON.'
+    manifest.endpoints[0].mcp_description = { en: longText }
+    manifest.endpoints[0].summary.en = 'Short summary that should be ignored.'
+    const tools = buildToolDefinitions(manifest)
+    expect(tools[0].description).toContain('Destructive and irreversible')
+    expect(tools[0].description).toContain('Allow API access')
+    expect(tools[0].description).not.toContain('Short summary')
+    // Verify rich-text paragraph breaks survive the build (not just the tail \n\nReference: …).
+    const richBody = tools[0].description.replace(/\n\nReference: .*$/, '')
+    expect(richBody).toContain('orderId.\n\nDestructive')
+    expect(richBody).toContain('carrier-queued.\n\nAuth:')
+  })
+
+  it('falls back to mcp_description.tr when .en is absent', () => {
+    const manifest = makeManifest()
+    manifest.endpoints[0].mcp_description = { tr: 'Türkçe açıklama: bakiye sorgulama aracı.' }
+    manifest.endpoints[0].summary.en = 'Short summary that should be ignored when mcp_description.tr exists.'
+    const tools = buildToolDefinitions(manifest)
+    expect(tools[0].description).toContain('Türkçe açıklama')
+    expect(tools[0].description).not.toContain('Short summary')
+  })
+
+  it('falls back to summary when mcp_description is absent', () => {
+    const tools = buildToolDefinitions(makeManifest())
+    expect(tools[0].description).toContain('Returns the account balance')
+  })
+
+  it('caps summary fallback at 600 chars (rich path is uncapped)', () => {
+    const manifest = makeManifest()
+    manifest.endpoints[0].summary.en = 'X'.repeat(2000)
+    const tools = buildToolDefinitions(manifest)
+    const body = tools[0].description.replace(/\n\nReference: .*$/, '')
+    expect(body.length).toBe(600)
+  })
 })
 
 describe('executeTool — get_balance', () => {
