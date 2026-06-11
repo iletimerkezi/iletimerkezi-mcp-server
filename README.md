@@ -4,6 +4,7 @@
 [![License](https://img.shields.io/npm/l/@iletimerkezi/mcp-server.svg)](LICENSE)
 [![Node](https://img.shields.io/node/v/@iletimerkezi/mcp-server.svg)](package.json)
 [![Glama score](https://glama.ai/mcp/servers/iletimerkezi/iletimerkezi-mcp-server/badges/score.svg)](https://glama.ai/mcp/servers/iletimerkezi/iletimerkezi-mcp-server)
+[![Mentioned in Awesome MCP Servers](https://awesome.re/mentioned-badge.svg)](https://github.com/punkpeye/awesome-mcp-servers)
 
 Model Context Protocol server for the [iletiMerkezi](https://www.iletimerkezi.com) SMS API. Lets MCP-aware LLM clients (Claude Code, Cursor, Codex CLI, Gemini CLI, VS Code+Cline, Claude Desktop, …) send SMS, query delivery reports, and manage senders / blacklists through tool calls.
 
