@@ -8,7 +8,8 @@ import { fileURLToPath } from 'node:url'
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const pkg = JSON.parse(readFileSync(resolve(ROOT, 'package.json'), 'utf8'))
 
-if (!pkg.version || !/^\d+\.\d+\.\d+/.test(pkg.version)) {
+const SEMVER = /^\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?(\+[0-9A-Za-z.-]+)?$/
+if (!pkg.version || !SEMVER.test(pkg.version)) {
   console.error(`generate-version: invalid version in package.json: ${pkg.version}`)
   process.exit(1)
 }

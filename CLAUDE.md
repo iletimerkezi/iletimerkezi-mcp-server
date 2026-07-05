@@ -85,7 +85,7 @@ Not: `src/http.ts` bir HTTP server değil, iletiMerkezi API'sine giden istemcidi
 ## Repo'ya özgü kritik notlar
 
 - **Tool'lar manifest'ten gelir, kodda yok.** En sık yapılacak hata: eksik/yanlış tool davranışını `src/` içinde şema yazarak düzeltmeye çalışmak. Kaynak, iletiMerkezi API dokümantasyonundan üretilen manifest'tir; düzeltme oraya gider.
-- **Sürümün tek kaynağı `package.json`.** `server.ts` handshake sürümünü runtime'da `package.json`'dan okur (`SERVER_VERSION`); elle sürüm sabiti yazılmaz. Regression testi `tests/server.test.ts`'te.
+- **Sürümün tek kaynağı `package.json`.** `src/version.ts` build zamanında `prebuild`/`pretest` script'iyle (`scripts/generate-version.mjs`) `package.json`'dan üretilir; `server.ts` handshake sürümünü oradan alır. Elle sürüm sabiti yazılmaz, `src/version.ts` elle düzenlenmez. Regression testi `tests/server.test.ts`'te.
 - **`Dockerfile` sürümü build arg ile pinli** (`ARG MCP_VERSION`); release'de default değer yeni sürüme çekilir.
 - **CI aktif.** `.github/workflows/ci.yml`: her PR ve main push'ta Node 18/20/22 üzerinde lint + build + test koşar. Merge öncesi CI yeşil olmalı.
 - **`AGENTS.md` yok.** Kısa bir AGENTS.md eklenmesi ayrı bir iş olarak değerlendirilebilir.
