@@ -6,10 +6,15 @@ import {
 import { readCredentials, MissingCredentialsError } from './auth.js'
 import { loadManifest } from './manifest.js'
 import { buildToolDefinitions, executeTool } from './tools.js'
+import { PACKAGE_VERSION } from './version.js'
 import type { ManifestLoadResult } from './types.js'
 
 const SERVER_NAME = 'iletimerkezi'
-const SERVER_VERSION = '0.2.0'
+
+// The MCP handshake must always report the published package version.
+// src/version.ts is generated from package.json by `prebuild`; never
+// hard-code a version here.
+export const SERVER_VERSION = PACKAGE_VERSION
 
 export interface CreateServerOptions {
   manifest?: ManifestLoadResult

@@ -8,6 +8,9 @@ module.exports = {
   },
   extensionsToTreatAsEsm: ['.ts'],
   transform: {
-    '^.+\\.tsx?$': ['ts-jest', { useESM: true, tsconfig: 'tsconfig.test.json' }],
+    '^.+\\.tsx?$': [
+      'ts-jest',
+      { useESM: true, tsconfig: '<rootDir>/tsconfig.test.json' },
+    ],
   },
 }

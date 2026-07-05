@@ -7,6 +7,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.2] — 2026-07-05
+
+### Fixed
+
+- The MCP handshake now reports the real package version. `SERVER_VERSION` was hard-coded to `0.2.0` in `src/server.ts` and had drifted from the published npm version; it is now sourced from `src/version.ts`, generated from `package.json` by the `prebuild` script, so the version has a single source of truth and `prepublishOnly` guarantees it on every release. Covered by a regression test.
+- `Dockerfile` no longer hard-codes a stale package version. It now pins via a build argument (`MCP_VERSION`, default matches the current release) and can be overridden with `--build-arg MCP_VERSION=x.y.z`.
+
+### Added
+
+- GitHub Actions CI: type-check, build and tests run on Node 18, 20 and 22 for every pull request and push to `main`.
+- Project context file (`CLAUDE.md`) documenting architecture, commands and contribution rules.
+
+### Documentation
+
+- Added the missing `[1.0.1]` changelog entry retroactively.
+
+## [1.0.1] — 2026-05-11
+
+### Changed
+
+- Tool descriptions now prefer the manifest's `mcp_description` over the endpoint summary, producing richer tool descriptions in MCP clients; the summary fallback stays capped at 600 characters.
+
+### Added
+
+- `glama.json` for Glama MCP server directory claim verification.
+- Rate limits note in `README.md`.
+
+### Fixed
+
+- Scoped npm publish: added `publishConfig.access: public` so `npm publish` works without extra flags.
+- `Dockerfile` pinned to `@iletimerkezi/mcp-server@1.0.0` for the Glama build.
+
 ## [1.0.0] — 2026-05-02
 
 First stable release. The public surface — tool inventory, request/response shapes, configuration env vars (`ILETIMERKEZI_API_KEY`, `ILETIMERKEZI_API_HASH`, `ILETIMERKEZI_MANIFEST_URL`, `ILETIMERKEZI_MCP_CACHE_DIR`), and the manifest-driven auto-discovery contract — is now stable. From here on, breaking changes follow semver and bump the major version.
