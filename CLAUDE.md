@@ -3,13 +3,13 @@
 Bu repo, iletiMerkezi SMS API'sinin resmi **Model Context Protocol (MCP) server**'ıdır. npm'de `@iletimerkezi/mcp-server` olarak yayınlanır; müşteriler bunu kendi MCP-uyumlu istemcilerinde (Claude Code, Cursor, Codex CLI, Gemini CLI, VS Code+Cline, Claude Desktop) çalıştırarak LLM üzerinden SMS gönderir, rapor sorgular, gönderici ve blacklist yönetir. Yani kullanıcılar hem son müşteriler hem de o müşterilerin LLM istemcileridir.
 
 **Repo PUBLIC.** github.com/iletimerkezi/iletimerkezi-mcp-server dünyaya açıktır. Her commit, yorum, PR ve bu dosya dahil her satır dışarıdan görünür. Sonuçları:
-- Türkçe iç not, TODO, sohbet alıntısı, ajan referansı public source'a yazılmaz (bkz. `~/.claude/rules/public-source-hygiene.md`).
-- Credential (API key/hash) hiçbir koşulda commit edilmez (bkz. `~/.claude/rules/no-plaintext-credentials.md`).
-- Bu CLAUDE.md bir iç çalışma dosyasıdır ama public'te durur; hassas hiçbir şey içermez.
+- Türkçe iç not, TODO, sohbet alıntısı, ajan referansı public source'a yazılmaz.
+- Credential (API key/hash) hiçbir koşulda commit edilmez; repo private olsaydı bile edilmezdi.
+- Bu CLAUDE.md bir iç çalışma dosyasıdır ama public'te durur; hassas hiçbir şey içermez ve içermeyecek.
 
-**Tier: T0.** Müşteri-yüzlü SDK yüzeyi. Bir regresyon, müşterilerin MCP istemci konfigürasyonlarını ya da tool davranışını kırar ve doğrudan onların üretim akışına yansır. T0 disiplini gevşetilmez; "acil" gerekçesiyle kısaltma yok (bkz. `~/.claude/rules/repo-severity-tiers.md`).
+**Tier: T0.** Müşteri-yüzlü SDK yüzeyi. Bir regresyon, müşterilerin MCP istemci konfigürasyonlarını ya da tool davranışını kırar ve doğrudan onların üretim akışına yansır. T0 disiplini gevşetilmez; "acil" gerekçesiyle kısaltma yok.
 
-Global kurallar: `~/.claude/CLAUDE.md` + `~/.claude/rules/`.
+eMarka'nın genel çalışma standartları geliştirici ortamında ayrıca tanımlıdır; bu dosya o standartların bu repoya düşen bağlayıcı özetidir.
 
 ---
 
@@ -60,16 +60,16 @@ Not: `src/http.ts` bir HTTP server değil, iletiMerkezi API'sine giden istemcidi
 
 ## Branch akışı
 
-`main`'e doğrudan push YASAK. Her değişiklik feature branch + PR üzerinden gider; kullanıcı "push et" dese bile varsayılan branch + PR (bkz. `~/.claude/rules/no-direct-push-main.md`). PR sonrası Copilot review polling başlat (`~/.claude/rules/copilot-review-polling.md`).
+`main`'e doğrudan push YASAK. Her değişiklik feature branch + PR üzerinden gider; kullanıcı "push et" dese bile varsayılan branch + PR. PR sonrası Copilot review yorumları takip edilir ve değerlendirilir.
 
 ---
 
 ## Kritik kurallar
 
 1. **Credential yalnızca runtime env'den gelir.** `ILETIMERKEZI_API_KEY` + `ILETIMERKEZI_API_HASH` istemcinin MCP config env'inde tutulur, `auth.ts` bunları `process.env`'den okur. Repoda `.env` yoktur ve gerekmez; test fixture'ları sahte değer kullanır. Gerçek key/hash asla commit'e girmez.
-2. **Upstream hata şeffaflığı.** `executeTool`, iletiMerkezi API yanıtının HTTP status'unu, `response.status.code`'unu, tam JSON gövdesini ve request URL'ini tool çıktısına yansıtır; 401 için panel "Allow API access" toggle'ına yönlendiren rehber verir. Bu davranış korunur, generic "bir sorun oluştu" mesajına indirgenmez (ruh: `~/.claude/rules/upstream-error-transparency.md`).
+2. **Upstream hata şeffaflığı.** `executeTool`, iletiMerkezi API yanıtının HTTP status'unu, `response.status.code`'unu, tam JSON gövdesini ve request URL'ini tool çıktısına yansıtır; 401 için panel "Allow API access" toggle'ına yönlendiren rehber verir. Bu davranış korunur, generic "bir sorun oluştu" mesajına indirgenmez.
 3. **Public surface stabildir (1.0.0'dan beri).** Tool envanteri, request/response şekilleri, env değişkenleri (`ILETIMERKEZI_API_KEY`, `ILETIMERKEZI_API_HASH`, `ILETIMERKEZI_MANIFEST_URL`, `ILETIMERKEZI_MCP_CACHE_DIR`) ve manifest-driven auto-discovery kontratı stabil. Bunları kıran değişiklik = breaking change = major bump = müşterilerin config'i bozulur. T0'da bu kabul edilemez; kaçınılmazsa CHANGELOG + major sürüm + geçiş notu zorunlu.
-4. **Manifest kontratını bozma.** 3 katmanlı yükleme (24s cache -> 5s timeout'lu live fetch -> build-time fallback) istemciyi `iletimerkezi.com` erişilemezken bile ayakta tutar. Bu zincir kısaltılmaz.
+4. **Manifest kontratını bozma.** 3 katmanlı yükleme (24 saatlik cache -> 5 saniye timeout'lu live fetch -> build-time fallback) istemciyi `iletimerkezi.com` erişilemezken bile ayakta tutar. Bu zincir kısaltılmaz.
 
 ---
 
@@ -88,4 +88,4 @@ Not: `src/http.ts` bir HTTP server değil, iletiMerkezi API'sine giden istemcidi
 - **Sürüm iki yerde ayrık.** `server.ts` içindeki MCP handshake `SERVER_VERSION` ile `package.json` sürümü otomatik senkron değildir; birini diğerine eşit varsayma.
 - **`Dockerfile` sürümü elle pinli** (`@1.0.0`); npm sürümü ilerlerken burası geride kalabilir, release'de kontrol et.
 - **CI yok.** `.github/` altında yalnızca release notları var, otomatik workflow yok. Lint/build/test lokal ve `prepublishOnly` üzerinden koşar. T0 için bu bir açık; CI eklenirse ayrı PR ile.
-- **`AGENTS.md` yok.** Global kural repoda kısa AGENTS.md ister; henüz eklenmemiş, gerekirse ayrı iş olarak açılır.
+- **`AGENTS.md` yok.** Kısa bir AGENTS.md eklenmesi ayrı bir iş olarak değerlendirilebilir.
