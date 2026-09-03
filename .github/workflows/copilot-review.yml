@@ -1,0 +1,25 @@
+name: Copilot PR Review
+
+on:
+  pull_request:
+    types: [opened, reopened]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  copilot-review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add Copilot as reviewer
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.pulls.requestReviewers({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+              reviewers: ['copilot']
+            }).catch(() => {
+              console.log('Note: Copilot may not be available in this organization yet.');
+            });
